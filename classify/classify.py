@@ -16,7 +16,7 @@ class Classify(object):
         # 单字特征模型
         self.by_char_model = fasttext.load_model(config.classify_model_by_char_path)
 
-    def predict(self, sentence):
+    def predict(self, sentence: str) -> tuple:
         """
         预测输入数据的结果
         :param sentence 句子
@@ -31,9 +31,9 @@ class Classify(object):
         # 使用list将zip对象变成列表 即 [ (label1, 置信度1, label2, 置信度2), ]
         # 取列表的第0个元素 即 (label1, 置信度1, label2, 置信度2)
         label_by_word, confidence_by_word, label_by_char, confidence_by_char = \
-        list(zip(*result_by_word, *result_by_char))[0]
+            list(zip(*result_by_word, *result_by_char))[0]
 
-        # 把所有的置信度，都转到同一个标签比较大小
+        # 把所有的置信度，都转到同一个标签QA比较大小
         if label_by_word == "__label__chat":
             confidence_by_word = 1 - confidence_by_word
 
@@ -42,6 +42,7 @@ class Classify(object):
 
         # 设置阈值
         threshold = 0.9
+        # 如果有一个置信度大于阈值，就认为类别为QA
         if confidence_by_word > threshold or confidence_by_char > threshold:
             return "QA", max(confidence_by_word, confidence_by_char)  # 返回两者中最大的置信值
         else:  # 由于置信度已经转成了类别为QA的置信度，所以如果类别是chat，要把置信度再转回来
@@ -54,11 +55,12 @@ class Classify(object):
         #     if confidence_by_word > threshold or confidence_by_char > threshold:
         #         return label_by_word, max(confidence_by_word, confidence_by_char)
         #     else:
-        #         return None, 0  # 无法判断分类
+        #         return None, 0  # 无法判断分类，或是置信度未达到阈值
         # else:  # 如果不同， 先以char为准，因为模型评估时发现，char比word准确点
-        #     if confidence_by_char > threshold:  # 先看by_char的结果,如果大于某个值，直接返回
+        #     threshold = 0.99  # 设置阈值高点
+        #     if confidence_by_char > threshold:  # 先看by_char的结果,如果大于阈值，直接返回
         #         return label_by_char, confidence_by_char
-        #     elif confidence_by_word > threshold:  # 再看by_word的结果，如果大于某个值，直接返回
+        #     elif confidence_by_word > threshold:  # 再看by_word的结果，如果大于阈值，直接返回
         #         return label_by_word, confidence_by_word
         #     else:  # 如果都不满足
         #         return None, 0  # 无法判断分类

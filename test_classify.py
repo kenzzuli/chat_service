@@ -20,4 +20,5 @@ if __name__ == '__main__':
     # build_classify_model(by_char=by_char)
     # evaluate_model(by_char=by_char)
     classfier = Classify()
-    print(classfier.predict("python 好 学 吗"))
+    print(classfier.predict("python好学吗"))
+    print(classfier.predict("今天天气不错啊"))
