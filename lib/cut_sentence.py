@@ -72,7 +72,7 @@ def cut(sentence, by_character=False, use_stopwords=False, with_pos=False):
     :return: 列表
     """
     if by_character:
-        assert with_pos == False  # 如果按字切分，就不能再有词性了
+        assert with_pos is False  # 如果按字切分，就不能再有词性了
         result = _cut_sentence_by_character(sentence, use_stopwords=use_stopwords)
     else:
         result = _cut_sentence_by_word(sentence, with_pos=with_pos, use_stopwords=use_stopwords)

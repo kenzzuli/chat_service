@@ -31,7 +31,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/prepare_corpus/prepare_chatbot_corpus/chatbot_corpus.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/prepare_corpus/prepare_classify_corpus/builid_classify_corpus.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/process_corpus.py">
           <value>
             <Attribute>
               <option name="separator" value="," />

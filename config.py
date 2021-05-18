@@ -8,6 +8,12 @@ xiaohuangji_path = "./corpus/classify/raw_corpus/小黄鸡未分词.conv"
 by_hand_path = "./corpus/classify/raw_corpus/手动构造的问题.json"
 by_crawl_path = "./corpus/classify/raw_corpus/爬虫抓取的问题.csv"
 
+chatbot_input_by_word_path = "./corpus/chatbot/input_by_word.txt"  # 聊天机器人 问 语料 按词切分
+chatbot_target_by_word_path = "./corpus/chatbot/target_by_word.txt"  # 聊天机器人 答 语料 按词切分
+
+chatbot_input_by_char_path = "./corpus/chatbot/input_by_char.txt"  # 聊天机器人 问 语料 按字切分
+chatbot_target_by_char_path = "./corpus/chatbot/target_by_char.txt"  # 聊天机器人 答 语料 按字切分
+
 classify_corpus_by_word_train_path = "./corpus/classify/processed_corpus/classify_by_word_train.txt"
 classify_corpus_by_word_test_path = "./corpus/classify/processed_corpus/classify_by_word_test.txt"
 
