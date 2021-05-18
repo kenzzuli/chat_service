@@ -10,7 +10,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/classify/sentence2sequence.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/config.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/corpus/classify/raw_corpus/小黄鸡未分词.conv">
           <value>
             <Attribute>
               <option name="separator" value="," />

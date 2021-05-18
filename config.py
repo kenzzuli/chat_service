@@ -4,6 +4,7 @@
 user_dict_path = "./corpus/user_dict/keywords.txt"
 q_a_pair_path = "./corpus/question_answer_pair/QA.xlsx"
 stopwords_path = "./corpus/user_dict/stopwords.txt"
+emoji_path = "./corpus/user_dict/emoji.txt"
 xiaohuangji_path = "./corpus/classify/raw_corpus/小黄鸡未分词.conv"
 by_hand_path = "./corpus/classify/raw_corpus/手动构造的问题.json"
 by_crawl_path = "./corpus/classify/raw_corpus/爬虫抓取的问题.csv"

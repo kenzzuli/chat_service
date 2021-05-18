@@ -6,3 +6,4 @@
 from .stopwords import stopwords
 from .cut_sentence import cut
 from .filters import filters
+from .emoji import emojis
