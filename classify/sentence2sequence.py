@@ -10,7 +10,6 @@ class Sen2Seq(object):
     EOS_TAG = "EOS"  # 句子结束
 
     def __init__(self):
-        # 构造str->index的字典
         self.dict = {self.UNK_TAG: 0, self.PAD_TAG: 1, self.SOS_TAG: 2, self.EOS_TAG: 3}
         self.inverse_dict = dict()
         self.count = dict()
@@ -27,7 +26,7 @@ class Sen2Seq(object):
         for word in sentence:  # 如果字典里没有某个单词，则其频数为0
             self.count[word] = self.count.get(word, 0) + 1
 
-    def build_vocab(self, min_count, max_count, vocab_size):
+    def build_vocab(self, min_count=None, max_count=None, vocab_size=None):
         """
         构造词表
         :param min_count:
@@ -49,7 +48,8 @@ class Sen2Seq(object):
         if vocab_size is not None:  # 满足词表内单词数量要求
             self.count = dict(sorted(self.count.items(), key=lambda x: x[1], reverse=True)[:vocab_size])
         # 构造词典
-        self.dict = {key: len(self.dict) for key in self.count}
+        for key in self.count:
+            self.dict[key] = len(self.dict)
         # 构造反向词典
         self.inverse_dict = dict(zip(self.dict.values(), self.dict.keys()))
 
@@ -95,4 +95,13 @@ class Sen2Seq(object):
 
 
 if __name__ == '__main__':
-    n2s = Sen2Seq()
+    sentence = list("我爱北京天安门，你爱我")
+    s2s = Sen2Seq()
+    s2s.fit(sentence)
+    s2s.build_vocab()
+    print(s2s.dict)
+    print(s2s.inverse_dict)
+    sequence = s2s.transform(sentence, seq_len=15, add_eos=True)
+    print(sequence)
+    ret = s2s.inverse_transform(sequence)
+    print(ret)
