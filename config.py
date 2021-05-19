@@ -48,4 +48,8 @@ s2s_target_by_word = load_model(s2s_target_by_word_path)
 s2s_input_by_char = load_model(s2s_input_by_char_path)
 s2s_target_by_char = load_model(s2s_target_by_char_path)
 
-seq_len = 40
+seq_len_by_char = 30
+seq_len_by_word = 20
+train_batch_size = 128
+test_batch_size = 128
+drop_last = True

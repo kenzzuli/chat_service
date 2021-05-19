@@ -42,9 +42,9 @@ def prepare_xiaohuangji(by_char=False):
     """
     with open(config.xiaohuangji_path, mode="r", encoding="utf-8") as fin:
         with open(config.chatbot_input_by_char_path if by_char else config.chatbot_input_by_word_path,
-                  mode="a", encoding="utf-8") as f_input:  # 存储问
+                  mode="w", encoding="utf-8") as f_input:  # 存储问
             with open(config.chatbot_target_by_char_path if by_char else config.chatbot_target_by_word_path,
-                      mode="a", encoding="utf-8") as f_target:  # 存储答
+                      mode="w", encoding="utf-8") as f_target:  # 存储答
                 text = fin.readlines()
                 num = 0
                 lines = list()  # 临时存储句子
@@ -55,10 +55,7 @@ def prepare_xiaohuangji(by_char=False):
                         lines.append(replace_emoji(line.strip()[2:]))  # 删去句首的M，并去掉颜文字
                     if len(lines) == 2:
                         # 去除符合过滤规则的句子
-                        lines = [i for i in lines if
-                                 not filter_line(i)]
-                        lines = [cut(i, by_character=by_char) for i in lines]
-                        # lines = [" ".join(cut(i, by_character=by_char, use_stopwords=True)) + "\n" for i in lines]
+                        lines = [" ".join(cut(i, by_character=by_char)) + "\n" for i in lines if not filter_line(i)]
                         # 经过筛选后，如果问答都在，则写入文件
                         if len(lines) == 2:
                             f_input.write(lines[0])

@@ -117,7 +117,11 @@ def load_model(file_path):
         return pickle.load(f)
 
 
-def run():
+def build_all_sen2seq():
+    """
+    构造所有四种sen2seq
+    :return:
+    """
     for i in range(2):
         for j in range(2):
             save_model(i, j)

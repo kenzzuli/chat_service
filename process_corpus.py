@@ -5,7 +5,7 @@ from prepare_corpus.prepare_classify_corpus.builid_classify_corpus import proces
 
 from prepare_corpus.prepare_chatbot_corpus.chatbot_corpus import prepare_xiaohuangji, replace_emoji
 
-# prepare_xiaohuangji(by_char=False)
+prepare_xiaohuangji(by_char=False)
 prepare_xiaohuangji(by_char=True)
 
 
