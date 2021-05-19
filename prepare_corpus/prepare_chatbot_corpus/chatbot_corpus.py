@@ -55,8 +55,10 @@ def prepare_xiaohuangji(by_char=False):
                         lines.append(replace_emoji(line.strip()[2:]))  # 删去句首的M，并去掉颜文字
                     if len(lines) == 2:
                         # 去除符合过滤规则的句子
-                        lines = [" ".join(cut(i, by_character=by_char, use_stopwords=True)) + "\n" for i in lines if
+                        lines = [i for i in lines if
                                  not filter_line(i)]
+                        lines = [cut(i, by_character=by_char) for i in lines]
+                        # lines = [" ".join(cut(i, by_character=by_char, use_stopwords=True)) + "\n" for i in lines]
                         # 经过筛选后，如果问答都在，则写入文件
                         if len(lines) == 2:
                             f_input.write(lines[0])

@@ -47,3 +47,5 @@ s2s_target_by_word = load_model(s2s_target_by_word_path)
 # 以字为单位的s2s模型
 s2s_input_by_char = load_model(s2s_input_by_char_path)
 s2s_target_by_char = load_model(s2s_target_by_char_path)
+
+seq_len = 40
