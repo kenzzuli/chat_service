@@ -48,8 +48,19 @@ s2s_target_by_word = load_model(s2s_target_by_word_path)
 s2s_input_by_char = load_model(s2s_input_by_char_path)
 s2s_target_by_char = load_model(s2s_target_by_char_path)
 
+# chatbot dataloader相关
 seq_len_by_char = 30
 seq_len_by_word = 20
 train_batch_size = 128
 test_batch_size = 128
 drop_last = True
+
+# chatbot 模型参数
+embedding_dim = 256
+padding_index = s2s_input_by_char.dict[s2s_input_by_word.PAD_TAG]
+encoder_hidden_size = 128
+encoder_num_layers = 3
+encoder_batch_first = False
+encoder_drop_out = 0.1
+encoder_bidirectional = False
+encoder_num_directions = 2 if encoder_bidirectional else 1
