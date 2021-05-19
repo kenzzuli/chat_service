@@ -12,6 +12,4 @@ from prepare_corpus.prepare_classify_corpus.builid_classify_corpus import proces
 # sentence = "人工智能+python最喜欢你啦 mua╭(╯ε╰)╮"
 # print(replace_emoji(sentence))
 
-from classify.sentence2sequence import run
 
-run()

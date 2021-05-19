@@ -1,7 +1,6 @@
 """
 句子转序列
 """
-import config
 from tqdm import tqdm
 import pickle
 
@@ -99,30 +98,23 @@ class Sen2Seq(object):
 
 def save_model(by_char=False, input=False):
     s2s = Sen2Seq()
+    # 拼接文件路径、模型路径
     file_path = "./corpus/chatbot/{}_by_{}.txt".format("input" if input else "target", "char" if by_char else "word")
-    model_path = "./model/s2s_{}_by_{}.pkl".format("input" if input else "target", "char" if by_char else "word")
-    desc = "Processing {} by {} Model".format("Input" if input else "Target", "Char" if by_char else "Word")
-    # if by_char:
-    #     if input:
-    #         file_path = config.chatbot_input_by_char_path
-    #         model_path = config.s2s_input_by_char_path
-    #     else:
-    #         file_path = config.chatbot_target_by_char_path
-    #         model_path = config.s2s_target_by_char_path
-    # else:
-    #     if input:
-    #         file_path = config.chatbot_input_by_word_path
-    #         model_path = config.s2s_input_by_word_path
-    #     else:
-    #         file_path = config.chatbot_target_by_word_path
-    #         model_path = config.s2s_target_by_word_path
+    model_path = "./model/chatbot/s2s_{}_by_{}.pkl".format("input" if input else "target",
+                                                           "char" if by_char else "word")
+    desc = "Processing {} By {} Model".format("Input" if input else "Target", "Char" if by_char else "Word")
     with open(file_path, mode="r", encoding="utf-8") as f_file:
         for line in tqdm(f_file.readlines(), desc=desc):
-            s2s.fit(line.split(" "))
+            s2s.fit(line.strip().split(" "))  # 必须strip()，因为读到的每行都有换行符
     s2s.build_vocab()
     with open(model_path, mode="wb") as f_model:
         pickle.dump(s2s, f_model)
     print("Vocab_size: {}".format(len(s2s)))
+
+
+def load_model(file_path):
+    with open(file_path, "rb") as f:
+        return pickle.load(f)
 
 
 def run():
