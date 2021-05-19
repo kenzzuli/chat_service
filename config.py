@@ -1,3 +1,5 @@
+import torch
+
 """配置文件"""
 from chatbot.sentence2sequence import load_model
 
@@ -49,18 +51,30 @@ s2s_input_by_char = load_model(s2s_input_by_char_path)
 s2s_target_by_char = load_model(s2s_target_by_char_path)
 
 # chatbot dataloader相关
-seq_len_by_char = 30
-seq_len_by_word = 20
+seq_len_by_char = 40
+seq_len_by_word = 30
 train_batch_size = 128
 test_batch_size = 128
 drop_last = True
 
 # chatbot 模型参数
 embedding_dim = 256
-padding_index = s2s_input_by_char.dict[s2s_input_by_word.PAD_TAG]
+padding_index = s2s_input_by_char.dict[s2s_input_by_char.PAD_TAG]
+sos_index = s2s_input_by_char.dict[s2s_input_by_char.SOS_TAG]
+eos_index = s2s_input_by_char.dict[s2s_input_by_char.EOS_TAG]
 encoder_hidden_size = 128
 encoder_num_layers = 3
 encoder_batch_first = False
 encoder_drop_out = 0.1
 encoder_bidirectional = False
 encoder_num_directions = 2 if encoder_bidirectional else 1
+
+decoder_hidden_size = 128
+decoder_num_layers = 3
+decoder_batch_first = False
+decoder_drop_out = 0.1
+decoder_bidirectional = False
+decoder_num_directions = 2 if decoder_bidirectional else 1
+
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+teacher_forcing_ratio = 0.3

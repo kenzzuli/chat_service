@@ -28,7 +28,7 @@ class ChatbotDataset(Dataset):
     def __getitem__(self, index):
         input = self.input[index].strip().split()
         target = self.target[index].strip().split()
-        input_length = len(input)
+        input_length = min(len(input), self.seq_len)  # 如果句子长度超过最大句长，会裁剪到最大句长
         target_length = len(target)
         # 将input 和 target转成序列
         input = self.input_s2s.transform(input, seq_len=self.seq_len)
