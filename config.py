@@ -26,3 +26,12 @@ classify_corpus_by_char_test_path = "./corpus/classify/processed_corpus/classify
 classify_model_by_word_path = "model/classify_by_word.model"  # 按词切分语料生成的模型
 # 把字作为特征的模型
 classify_model_by_char_path = "model/classify_by_char.model"  # 按字切分语料生成的模型
+
+######问答相关#########
+# 以词为单位的s2s
+s2s_input_by_word_path = "model/s2s_input_by_word.pkl"
+s2s_target_by_word_path = "model/s2s_target_by_word.pkl"
+
+# 以字为单位的s2s
+s2s_input_by_char_path = "model/s2s_input_by_char.pkl"
+s2s_target_by_char_path = "model/s2s_target_by_char.pkl"

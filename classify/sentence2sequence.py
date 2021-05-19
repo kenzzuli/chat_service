@@ -1,6 +1,9 @@
 """
 句子转序列
 """
+import config
+from tqdm import tqdm
+import pickle
 
 
 class Sen2Seq(object):
@@ -92,6 +95,40 @@ class Sen2Seq(object):
                 break
             ret.append(self.inverse_dict.get(i, self.UNK_TAG))  # 如果不存在，则用UNK代替
         return ret
+
+
+def save_model(by_char=False, input=False):
+    s2s = Sen2Seq()
+    file_path = "./corpus/chatbot/{}_by_{}.txt".format("input" if input else "target", "char" if by_char else "word")
+    model_path = "./model/s2s_{}_by_{}.pkl".format("input" if input else "target", "char" if by_char else "word")
+    desc = "Processing {} by {} Model".format("Input" if input else "Target", "Char" if by_char else "Word")
+    # if by_char:
+    #     if input:
+    #         file_path = config.chatbot_input_by_char_path
+    #         model_path = config.s2s_input_by_char_path
+    #     else:
+    #         file_path = config.chatbot_target_by_char_path
+    #         model_path = config.s2s_target_by_char_path
+    # else:
+    #     if input:
+    #         file_path = config.chatbot_input_by_word_path
+    #         model_path = config.s2s_input_by_word_path
+    #     else:
+    #         file_path = config.chatbot_target_by_word_path
+    #         model_path = config.s2s_target_by_word_path
+    with open(file_path, mode="r", encoding="utf-8") as f_file:
+        for line in tqdm(f_file.readlines(), desc=desc):
+            s2s.fit(line.split(" "))
+    s2s.build_vocab()
+    with open(model_path, mode="wb") as f_model:
+        pickle.dump(s2s, f_model)
+    print("Vocab_size: {}".format(len(s2s)))
+
+
+def run():
+    for i in range(2):
+        for j in range(2):
+            save_model(i, j)
 
 
 if __name__ == '__main__':
