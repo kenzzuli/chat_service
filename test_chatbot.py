@@ -2,6 +2,7 @@ from chatbot.sentence2sequence import build_all_sen2seq
 from chatbot.dataset import ChatbotDataset, get_dataloader
 from chatbot.encoder import Encoder
 from chatbot.decoder import Decoder
+from chatbot.train_and_test import train, eval, predict
 
 
 def test_chatbot_dataset():
@@ -50,11 +51,15 @@ def test_decoder():
         break
 
 
-# 构造所有的sen2seq
-# build_all_sen2seq()
+if __name__ == '__main__':
+    # 构造所有的sen2seq
+    # build_all_sen2seq()
 
-# test_chatbot_dataset()
-# test_chatbot_dataloader()
+    # test_chatbot_dataset()
+    # test_chatbot_dataloader()
 
-test_encoder()
-# test_decoder()
+    # test_encoder()
+    # test_decoder()
+    train()
+    eval()
+    predict()

@@ -4,12 +4,12 @@
 import torch.nn as nn
 from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
 import config
+from config import by_char
 
 
 class Encoder(nn.Module):
-    def __init__(self, by_char=True):
+    def __init__(self):
         super().__init__()
-        self.by_char = by_char
         self.seq_len = config.seq_len_by_char if by_char else config.seq_len_by_word
         self.embed = nn.Embedding(num_embeddings=len(config.s2s_input_by_char if by_char else config.s2s_input_by_word),
                                   embedding_dim=config.embedding_dim,

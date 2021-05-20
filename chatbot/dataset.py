@@ -4,10 +4,11 @@ dataset和dataloader
 from torch.utils.data import DataLoader, Dataset, random_split
 import config
 import torch
+from config import by_char
 
 
 class ChatbotDataset(Dataset):
-    def __init__(self, by_char=True):
+    def __init__(self):
         self.__input_path = config.chatbot_input_by_char_path if by_char else config.chatbot_input_by_word_path
         self.__target_path = config.chatbot_target_by_char_path if by_char else config.chatbot_target_by_word_path
         # 序列最大长度，按字和词不一样
@@ -29,7 +30,7 @@ class ChatbotDataset(Dataset):
         input = self.input[index].strip().split()
         target = self.target[index].strip().split()
         input_length = min(len(input), self.seq_len)  # 如果句子长度超过最大句长，会裁剪到最大句长
-        target_length = len(target)
+        target_length = min(len(target), self.seq_len)
         # 将input 和 target转成序列
         input = self.input_s2s.transform(input, seq_len=self.seq_len)
         target = self.target_s2s.transform(target, seq_len=self.seq_len, add_eos=True)
@@ -39,8 +40,8 @@ class ChatbotDataset(Dataset):
         return len(self.input)
 
 
-def get_dataloader(by_char=True):
-    all_dataset = ChatbotDataset(by_char=by_char)
+def get_dataloader():
+    all_dataset = ChatbotDataset()
     train_size = int(0.8 * len(all_dataset))
     test_size = len(all_dataset) - train_size
     train_dataset, test_dataset = random_split(all_dataset, [train_size, test_size])

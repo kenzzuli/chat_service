@@ -6,10 +6,11 @@ import torch
 import config
 import torch.nn.functional as F
 import random
+from config import by_char
 
 
 class Decoder(nn.Module):
-    def __init__(self, by_char=True):
+    def __init__(self):
         super().__init__()
         self.seq_len = config.seq_len_by_char if by_char else config.seq_len_by_word
         self.embedding = nn.Embedding(

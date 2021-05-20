@@ -3,6 +3,9 @@ import torch
 """配置文件"""
 from chatbot.sentence2sequence import load_model
 
+# todo 重构整个项目，只用by_char，决定整个项目是以 词 还是 字
+by_char = False  # 决定整个模型是按词还是按字
+
 # 原始语料
 user_dict_path = "./corpus/user_dict/keywords.txt"  # 用户自定义词典，jieba分词使用
 q_a_pair_path = "./corpus/question_answer_pair/QA.xlsx"  # qa问答对
@@ -78,3 +81,10 @@ decoder_num_directions = 2 if decoder_bidirectional else 1
 
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 teacher_forcing_ratio = 0.3
+
+chatbot_model_by_char_path = "./model/chatbot/chatbot_model_by_char.pkl"
+chatbot_model_by_word_path = "./model/chatbot/chatbot_model_by_word.pkl"
+chatbot_optimizer_by_char_path = "./model/chatbot/chatbot_optimizer_by_char.pkl"
+chatbot_optimizer_by_word_path = "./model/chatbot/chatbot_optimizer_by_word.pkl"
+
+EPOCHS = 1
