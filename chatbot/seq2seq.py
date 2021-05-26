@@ -14,10 +14,10 @@ class Seq2Seq(nn.Module):
 
     def forward(self, input, input_length, target):
         encoder_output, encoder_hidden = self.encoder(input, input_length)
-        outputs = self.decoder(encoder_hidden, target)
+        outputs = self.decoder(encoder_hidden, encoder_output, target)
         return outputs
 
     def evaluate(self, input, input_length):
         encoder_output, encoder_hidden = self.encoder(input, input_length)
-        outputs = self.decoder.evaluation(encoder_hidden)
+        outputs = self.decoder.evaluation(encoder_hidden, encoder_output)
         return outputs

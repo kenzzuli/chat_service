@@ -7,6 +7,7 @@ import config
 import torch.nn.functional as F
 import random
 from config import by_char
+from chatbot.attention import Attention
 
 
 class Decoder(nn.Module):
@@ -23,8 +24,12 @@ class Decoder(nn.Module):
         # 经过全连接层，将[batch_size, hidden_size*num_directions] 转成 [batch_size, vocab_size]
         self.fc = nn.Linear(in_features=config.decoder_hidden_size * config.decoder_num_directions,
                             out_features=len(config.s2s_target_by_char if by_char else config.s2s_target_by_word))
+        self.attention = Attention(method="general")
+        self.Wa = nn.Linear(
+            config.encoder_hidden_size * config.encoder_num_directions + config.decoder_hidden_size * config.decoder_num_directions,
+            config.decoder_hidden_size, bias=False)
 
-    def forward(self, encoder_hidden, target):
+    def forward(self, encoder_hidden, encoder_outputs, target):
         """
         :param encoder_hidden: [num_layers*num_directions, batch_size, hidden_size]
         :param target: [batch_size, seq_len+1] 构造数据集时指定长度为seq_len+1, 做teacher forcing
@@ -45,14 +50,14 @@ class Decoder(nn.Module):
         if use_teacher_forcing:  # 如果使用教师纠偏，整个batch的输入使用真实值
             for i in range(self.seq_len + 1):
                 # 3. 获取第一个时间步的decoder_output，形状为[batch_size, vocab_size]
-                decoder_output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden)
+                decoder_output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden, encoder_outputs)
                 outputs.append(decoder_output)
                 # 4. 计算第一个decoder_output，得到最后的输出结果 形状为[batch_size, 1]
                 decoder_input = target[:, i].unsqueeze(1)  # 增加一个维度，由[batch_size,]变成[batch_size,1]
         else:  # 如果不使用教师纠偏，整个batch使用预测值
             for i in range(self.seq_len + 1):
                 # 3. 获取第一个时间步的decoder_output，形状为[batch_size, vocab_size]
-                decoder_output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden)
+                decoder_output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden, encoder_outputs)
                 outputs.append(decoder_output)
                 # 4. 计算第一个decoder_output，得到最后的输出结果 形状为[batch_size, 1]
                 # 获取最后一个维度中最大值所在的位置，即确定是哪一个字符，以此作为下一个时间步的输入
@@ -64,26 +69,45 @@ class Decoder(nn.Module):
         outputs = torch.stack(outputs, dim=0)  # [seq_len, batch_size, vocab_size]
         return outputs
 
-    def forward_step(self, decoder_input, decoder_hidden):
+    def forward_step(self, decoder_input, decoder_hidden, encoder_outputs):
         """
         计算每个时间步的结果
         :param decoder_input [batch_size,1]
         :param decoder_hidden [num_layers*num_directions, batch_size, hidden_size]
+        :param encoder_outputs [seq_len, batch_size, encoder_hidden_size*encoder_num_directions]
         :return output [batch_size, vocab_size]
         :return decoder_hidden 形状同上面的decoder_hidden
         """
         decoder_input_embed = self.embedding(decoder_input)  # [batch_size, 1, embedding_dim]
         decoder_input_embed = decoder_input_embed.permute(1, 0, 2)  # [1, batch_size, embedding_dim]
         output, decoder_hidden = self.gru(decoder_input_embed, decoder_hidden)
-        # Output: [1, batch_size, hidden_size*num_directions]
-        # decoder_hidden: [num_layers*num_directions, batch_size, hidden_size]
+        # output: [1, batch_size, decoder_hidden_size*decoder_num_directions]
+        # decoder_hidden: [decoder_num_layers*decoder_num_directions, batch_size, hidden_size]
+
+        #### 增加attention #####
+        # 形状为[batch_size, seq_len]
+        attention_weight = self.attention(decoder_hidden, encoder_outputs)
+        # 形状为[batch_size, 1, seq_len]
+        attention_weight = attention_weight.unsqueeze(1)
+        # 形状为[batch_size, seq_len, encoder_hidden_size*encoder_num_directions]
+        encoder_outputs = encoder_outputs.permute(1, 0, 2)
+        # 形状为[batch_size, 1, encoder_hidden_size*encoder_num_directions]
+        context_vector = attention_weight.bmm(encoder_outputs)
+        # 形状为[batch_size, 1, encoder_hidden_size*encoder_num_directions+decoder_hidden*decoder_num_directions]
+        concated = torch.cat([output.permute(1, 0, 2), context_vector], dim=-1)
+        # 形状为[batch_size, encoder_hidden_size*encoder_num_directions+decoder_hidden*decoder_num_directions]
+        concated = concated.squeeze(1)
+        # 形状为[batch_size, decoder_hidden_size]
+        output = torch.tanh(self.Wa(concated))
+        ######attention结束#######
+
         # 将output的第0个维度去掉
-        output = output.squeeze(0)  # [batch_size, hidden_size*num_directions]
+        # output = output.squeeze(0)  # [batch_size, hidden_size*num_directions]
         output = self.fc(output)  # [batch_size, vocab_size]
         output = F.log_softmax(output, dim=-1)  # 取概率 [batch_size, vocab_size]
         return output, decoder_hidden
 
-    def evaluation(self, encoder_hidden):
+    def evaluation(self, encoder_hidden, encoder_outputs):
         """
         模型评估时调用
         :param encoder_hidden: [num_direction*num_layers, batch_size, hidden_size]
@@ -95,7 +119,7 @@ class Decoder(nn.Module):
         outputs = []
 
         while True:
-            decoder_output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden)
+            decoder_output, decoder_hidden = self.forward_step(decoder_input, decoder_hidden, encoder_outputs)
             outputs.append(decoder_output)
             decoder_input = torch.argmax(decoder_output, dim=-1, keepdim=True)
             # 构造一个形状为[batch_size, 1]全为eos或pad的tensor

@@ -61,5 +61,5 @@ if __name__ == '__main__':
     # test_encoder()
     # test_decoder()
     train()
-    eval()
-    predict()
+    # eval()
+    # predict()

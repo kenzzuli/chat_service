@@ -107,9 +107,3 @@ def predict():
     # 拼接
     pred = "".join(pred).split("EOS")[0]
     print("预测结果为:", pred)
-
-
-if __name__ == '__main__':
-    train()
-    eval()
-    predict()
