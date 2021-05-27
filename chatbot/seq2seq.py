@@ -21,3 +21,8 @@ class Seq2Seq(nn.Module):
         encoder_output, encoder_hidden = self.encoder(input, input_length)
         outputs = self.decoder.evaluation(encoder_hidden, encoder_output)
         return outputs
+
+    def evaluate_beam_search(self, input, input_length):
+        encoder_output, encoder_hidden = self.encoder(input, input_length)
+        seq = self.decoder.evaluation_beam_search_heapq(encoder_output, encoder_hidden)
+        return seq

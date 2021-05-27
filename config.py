@@ -88,3 +88,5 @@ chatbot_optimizer_by_char_path = "./model/chatbot/chatbot_optimizer_by_char.pkl"
 chatbot_optimizer_by_word_path = "./model/chatbot/chatbot_optimizer_by_word.pkl"
 
 EPOCHS = 1
+
+beam_width = 10

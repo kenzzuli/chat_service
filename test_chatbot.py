@@ -2,7 +2,7 @@ from chatbot.sentence2sequence import build_all_sen2seq
 from chatbot.dataset import ChatbotDataset, get_dataloader
 from chatbot.encoder import Encoder
 from chatbot.decoder import Decoder
-from chatbot.train_and_test import train, eval, predict
+from chatbot.train_and_test import train, eval, predict, predict_beam_search
 
 
 def test_chatbot_dataset():
@@ -60,6 +60,8 @@ if __name__ == '__main__':
 
     # test_encoder()
     # test_decoder()
-    train()
+    # train()
     # eval()
     # predict()
+    predict_beam_search()
+

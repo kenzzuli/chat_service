@@ -107,3 +107,22 @@ def predict():
     # 拼接
     pred = "".join(pred).split("EOS")[0]
     print("预测结果为:", pred)
+
+
+def predict_beam_search():
+    s2s.eval()
+    sentence = input("请输入句子: ")
+    # 句子转序列
+    sentence = cut(sentence, by_character=by_char)
+    s2s_input = config.s2s_input_by_char if by_char else config.s2s_input_by_word
+    s2s_target = config.s2s_target_by_char if by_char else config.s2s_target_by_word
+    seq_len = config.seq_len_by_char if by_char else config.seq_len_by_word
+    feature = s2s_input.transform(sentence, seq_len)
+    # 构造feature和feature——length
+    feature = torch.LongTensor(feature).to(config.device).unsqueeze(0)
+    feature_length = torch.LongTensor([min(len(sentence), seq_len)]).to(config.device)
+    # 预测
+    y_predict = s2s.evaluate_beam_search(feature, feature_length)
+    # 转成句子
+    for i in y_predict:
+        print("".join(s2s_target.inverse_transform(i)))

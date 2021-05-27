@@ -8,6 +8,7 @@ import torch.nn.functional as F
 import random
 from config import by_char
 from chatbot.attention import Attention
+import heapq
 
 
 class Decoder(nn.Module):
@@ -124,10 +125,94 @@ class Decoder(nn.Module):
             decoder_input = torch.argmax(decoder_output, dim=-1, keepdim=True)
             # 构造一个形状为[batch_size, 1]全为eos或pad的tensor
             eos_tensor = torch.LongTensor([[config.eos_index]] * batch_size).to(config.device)
-            pad_tensor = torch.LongTensor([[config.pad_index]] * batch_size).to(config.device)
+            pad_tensor = torch.LongTensor([[config.padding_index]] * batch_size).to(config.device)
             # 如果整个batch全部预测的都是eos或pad，则结束循环
             if eos_tensor.eq(decoder_input).all().item() or pad_tensor.eq(decoder_input).all().item():
                 break
 
         outputs = torch.stack(outputs, dim=0)
         return outputs
+
+    # decoder中的新方法
+    def evaluation_beam_search_heapq(self, encoder_outputs, encoder_hidden):
+        """使用 堆 来完成beam search，对是一种优先级的队列，按照优先级顺序存取数据"""
+
+        batch_size = encoder_hidden.size(1)
+        # 1. 构造第一次需要的输入数据，保存在堆中
+        decoder_input = torch.LongTensor([[config.sos_index] * batch_size]).to(config.device)
+        decoder_hidden = encoder_hidden  # 需要输入的hidden
+
+        prev_beam = Beam()
+        prev_beam.add(1, False, [decoder_input.item()], decoder_input, decoder_hidden)
+        while True:
+            cur_beam = Beam()
+            # 2. 取出堆中的数据，进行forward_step的操作，获得当前时间步的output，hidden
+            # 这里使用下划线进行区分
+            all_complete_num = 0
+            for _probability, _complete, _seq, _decoder_input, _decoder_hidden in prev_beam:
+                # 判断前一次的_complete是否为True，如果是，则不需要forward
+                # 有可能为True，但是概率并不是最大
+                if _complete is True:
+                    cur_beam.add(_probability, _complete, _seq, _decoder_input, _decoder_hidden)
+                    all_complete_num += 1
+                else:
+                    decoder_output_t, decoder_hidden = self.forward_step(_decoder_input, _decoder_hidden,
+                                                                         encoder_outputs)
+                    value, index = torch.topk(decoder_output_t, config.beam_width)  # [batch_size=1,beam_width=3]
+                    # 3. 从output中选择topk（k=beam width）个输出，作为下一次的input
+                    for m, n in zip(value[0], index[0]):
+                        decoder_input = torch.LongTensor([[n]]).to(config.device)
+                        seq = _seq + [n.item()]
+                        probability = _probability * m
+                        if n.item() == config.eos_index:
+                            complete = True
+                        else:
+                            complete = False
+                        # 4. 把下一个时间步中需要的输入等数据保存在一个新的堆中
+                        cur_beam.add(probability, complete, seq, decoder_input, decoder_hidden)
+
+            # 5. 获取新的堆中的优先级最高（概率最大）的数据，判断数据是否是EOS结尾或者是否达到最大长度，如果是，停止迭代
+            best_prob, best_complete, best_seq, _, _ = max(cur_beam)
+            seq_len = config.seq_len_by_char if by_char else config.seq_len_by_word
+            # if best_complete is True or len(best_seq) - 1 == seq_len:  # 减去sos
+            if len(best_seq) - 1 == seq_len or all_complete_num == config.beam_width:
+                ret = []
+                for _, _, sequence, _, _ in cur_beam:
+                    ret.append(self._prepare_seq(sequence))
+                return ret
+
+            else:
+                # 6. 则重新遍历新的堆中的数据
+                prev_beam = cur_beam
+
+    @staticmethod
+    def _prepare_seq(seq):  # 对结果进行基础的处理，共后续转化为文字使用
+        if seq[0] == config.sos_index:
+            seq = seq[1:]
+        if seq[-1] == config.eos_index:
+            seq = seq[:-1]
+        return seq
+
+
+class Beam:
+    def __init__(self):
+        self.heap = list()  # 保存数据的位置
+        self.beam_width = config.beam_width  # 保存数据的总数
+
+    def add(self, probability, complete, seq, decoder_input, decoder_hidden):
+        """
+        添加数据，同时判断总的数据个数，多则删除
+        :param probability: 概率乘积
+        :param complete: 最后一个是否为EOS
+        :param seq: list，所有token的列表
+        :param decoder_input: 下一次进行解码的输入，通过前一次获得
+        :param decoder_hidden: 下一次进行解码的hidden，通过前一次获得
+        :return:
+        """
+        heapq.heappush(self.heap, [probability, complete, seq, decoder_input, decoder_hidden])
+        # 判断数据的个数，如果大，则弹出。保证数据总个数小于等于3
+        if len(self.heap) > self.beam_width:
+            heapq.heappop(self.heap)
+
+    def __iter__(self):  # 让该beam能够被迭代
+        return iter(self.heap)

@@ -17,6 +17,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/chatbot/decoder.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/chatbot/train_and_test.py">
           <value>
             <Attribute>
