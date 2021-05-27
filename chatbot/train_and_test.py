@@ -8,16 +8,14 @@ from chatbot.seq2seq import Seq2Seq
 from lib import cut
 from config import by_char
 
-model_path = config.chatbot_model_path
-optimizer_path = config.chatbot_optimizer_path
 # 使用gpu训练
 s2s = Seq2Seq().to(config.device)
 optimizer = torch.optim.Adam(s2s.parameters())
 
 # 模型加载
-if os.path.exists(model_path) and os.path.exists(optimizer_path):
-    s2s.load_state_dict(torch.load(model_path, map_location=config.device))
-    optimizer.load_state_dict(torch.load(optimizer_path, map_location=config.device))
+if os.path.exists(config.chatbot_model_path) and os.path.exists(config.chatbot_optimizer_path):
+    s2s.load_state_dict(torch.load(config.chatbot_model_path, map_location=config.device))
+    optimizer.load_state_dict(torch.load(config.chatbot_optimizer_path, map_location=config.device))
 
 train_dataloader, test_dataloader = get_dataloader()
 
@@ -48,8 +46,8 @@ def train():
                 t.set_postfix(loss=loss.item())  # 设置后缀
                 t.update(1)  # 手动更新进度条
                 if index % 10 == 0:  # 每10个batch保存一次模型
-                    torch.save(s2s.state_dict(), model_path)
-                    torch.save(optimizer.state_dict(), optimizer_path)
+                    torch.save(s2s.state_dict(), config.chatbot_model_path)
+                    torch.save(optimizer.state_dict(), config.chatbot_optimizer_path)
 
 
 def eval():

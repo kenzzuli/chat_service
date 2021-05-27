@@ -3,7 +3,6 @@ import torch
 """配置文件"""
 from chatbot.sentence2sequence import load_model
 
-# todo 重构整个项目，只用by_char，决定整个项目是以 词 还是 字
 by_char = False  # 决定整个模型是按词还是按字
 
 # 原始语料
@@ -67,9 +66,9 @@ drop_last = True
 
 # chatbot 模型参数
 embedding_dim = 256
-padding_index = s2s_input_by_char.dict[s2s_input_by_char.PAD_TAG]
-sos_index = s2s_input_by_char.dict[s2s_input_by_char.SOS_TAG]
-eos_index = s2s_input_by_char.dict[s2s_input_by_char.EOS_TAG]
+padding_index = s2s_input.dict[s2s_input.PAD_TAG]
+sos_index = s2s_input.dict[s2s_input.SOS_TAG]
+eos_index = s2s_input.dict[s2s_input.EOS_TAG]
 encoder_hidden_size = 128
 encoder_num_layers = 3
 encoder_batch_first = False
