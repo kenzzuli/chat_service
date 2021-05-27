@@ -6,7 +6,6 @@ import torch
 import config
 import torch.nn.functional as F
 import random
-from config import by_char
 from chatbot.attention import Attention
 import heapq
 
@@ -14,9 +13,9 @@ import heapq
 class Decoder(nn.Module):
     def __init__(self):
         super().__init__()
-        self.seq_len = config.seq_len_by_char if by_char else config.seq_len_by_word
+        self.seq_len = config.seq_len
         self.embedding = nn.Embedding(
-            num_embeddings=len(config.s2s_target_by_char if by_char else config.s2s_target_by_word),
+            num_embeddings=len(config.s2s_target),
             embedding_dim=config.embedding_dim,
             padding_idx=config.padding_index)
         self.gru = nn.GRU(input_size=config.embedding_dim, hidden_size=config.decoder_hidden_size,
@@ -24,7 +23,7 @@ class Decoder(nn.Module):
                           dropout=config.decoder_drop_out, bidirectional=config.decoder_bidirectional)
         # 经过全连接层，将[batch_size, hidden_size*num_directions] 转成 [batch_size, vocab_size]
         self.fc = nn.Linear(in_features=config.decoder_hidden_size * config.decoder_num_directions,
-                            out_features=len(config.s2s_target_by_char if by_char else config.s2s_target_by_word))
+                            out_features=len(config.s2s_target))
         self.attention = Attention(method="general")
         self.Wa = nn.Linear(
             config.encoder_hidden_size * config.encoder_num_directions + config.decoder_hidden_size * config.decoder_num_directions,
@@ -173,7 +172,7 @@ class Decoder(nn.Module):
 
             # 5. 获取新的堆中的优先级最高（概率最大）的数据，判断数据是否是EOS结尾或者是否达到最大长度，如果是，停止迭代
             best_prob, best_complete, best_seq, _, _ = max(cur_beam)
-            seq_len = config.seq_len_by_char if by_char else config.seq_len_by_word
+            seq_len = config.seq_len
             # if best_complete is True or len(best_seq) - 1 == seq_len:  # 减去sos
             if len(best_seq) - 1 == seq_len or all_complete_num == config.beam_width:
                 ret = []

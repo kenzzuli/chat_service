@@ -36,6 +36,8 @@ chatbot_target_by_word_path = "./corpus/chatbot/target_by_word.txt"  # 聊天机
 # 按字切分
 chatbot_input_by_char_path = "./corpus/chatbot/input_by_char.txt"  # 聊天机器人 问 语料 按字切分
 chatbot_target_by_char_path = "./corpus/chatbot/target_by_char.txt"  # 聊天机器人 答 语料 按字切分
+chatbot_input_path = chatbot_input_by_char_path if by_char else chatbot_input_by_word_path
+chatbot_target_path = chatbot_target_by_char_path if by_char else chatbot_target_by_word_path
 
 # sen2seq
 # 路径
@@ -45,17 +47,20 @@ s2s_target_by_word_path = "model/chatbot/s2s_target_by_word.pkl"
 # 以字为单位的s2s模型路径
 s2s_input_by_char_path = "model/chatbot/s2s_input_by_char.pkl"
 s2s_target_by_char_path = "model/chatbot/s2s_target_by_char.pkl"
+
+s2s_input_path = s2s_input_by_char_path if by_char else s2s_input_by_word_path
+s2s_target_path = s2s_target_by_char_path if by_char else s2s_target_by_word_path
 # 模型
-# 以词为单位的s2s模型
-s2s_input_by_word = load_model(s2s_input_by_word_path)
-s2s_target_by_word = load_model(s2s_target_by_word_path)
-# 以字为单位的s2s模型
-s2s_input_by_char = load_model(s2s_input_by_char_path)
-s2s_target_by_char = load_model(s2s_target_by_char_path)
+
+
+s2s_input = load_model(s2s_input_path)
+s2s_target = load_model(s2s_target_path)
 
 # chatbot dataloader相关
 seq_len_by_char = 40
 seq_len_by_word = 30
+seq_len = seq_len_by_char if by_char else seq_len_by_word
+
 train_batch_size = 128
 test_batch_size = 128
 drop_last = True
@@ -86,7 +91,12 @@ chatbot_model_by_char_path = "./model/chatbot/chatbot_model_by_char.pkl"
 chatbot_model_by_word_path = "./model/chatbot/chatbot_model_by_word.pkl"
 chatbot_optimizer_by_char_path = "./model/chatbot/chatbot_optimizer_by_char.pkl"
 chatbot_optimizer_by_word_path = "./model/chatbot/chatbot_optimizer_by_word.pkl"
+chatbot_model_path = chatbot_model_by_char_path if by_char else chatbot_model_by_word_path
+chatbot_optimizer_path = chatbot_optimizer_by_char_path if by_char else chatbot_optimizer_by_word_path
 
 EPOCHS = 1
 
+# 束集搜索宽度
 beam_width = 10
+# 梯度裁剪
+clip = 0.01

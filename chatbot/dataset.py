@@ -4,18 +4,17 @@ dataset和dataloader
 from torch.utils.data import DataLoader, Dataset, random_split
 import config
 import torch
-from config import by_char
 
 
 class ChatbotDataset(Dataset):
     def __init__(self):
-        self.__input_path = config.chatbot_input_by_char_path if by_char else config.chatbot_input_by_word_path
-        self.__target_path = config.chatbot_target_by_char_path if by_char else config.chatbot_target_by_word_path
+        self.__input_path = config.chatbot_input_path
+        self.__target_path = config.chatbot_target_path
         # 序列最大长度，按字和词不一样
-        self.seq_len = config.seq_len_by_char if by_char else config.seq_len_by_word
+        self.seq_len = config.seq_len
         # 两个s2s
-        self.input_s2s = config.s2s_input_by_char if by_char else config.s2s_input_by_word
-        self.target_s2s = config.s2s_target_by_char if by_char else config.s2s_target_by_word
+        self.input_s2s = config.s2s_input
+        self.target_s2s = config.s2s_target
         self.input, self.target = self.get_data()
 
     def get_data(self):

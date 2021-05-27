@@ -60,8 +60,8 @@ if __name__ == '__main__':
 
     # test_encoder()
     # test_decoder()
-    # train()
+    train()
     # eval()
     # predict()
-    predict_beam_search()
+    # predict_beam_search()
 

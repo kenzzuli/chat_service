@@ -8,8 +8,8 @@ from chatbot.seq2seq import Seq2Seq
 from lib import cut
 from config import by_char
 
-model_path = config.chatbot_model_by_char_path if by_char else config.chatbot_model_by_word_path
-optimizer_path = config.chatbot_optimizer_by_char_path if by_char else config.chatbot_optimizer_by_word_path
+model_path = config.chatbot_model_path
+optimizer_path = config.chatbot_optimizer_path
 # 使用gpu训练
 s2s = Seq2Seq().to(config.device)
 optimizer = torch.optim.Adam(s2s.parameters())
@@ -42,6 +42,8 @@ def train():
                 # print(target.size(), target.type())
                 loss = F.nll_loss(y_predict, target, ignore_index=config.padding_index)
                 loss.backward()
+                # 增加梯度裁剪
+                torch.nn.utils.clip_grad_norm_(s2s.parameters(), config.clip)
                 optimizer.step()
                 t.set_postfix(loss=loss.item())  # 设置后缀
                 t.update(1)  # 手动更新进度条
@@ -87,9 +89,9 @@ def predict():
     sentence = input("请输入句子: ")
     # 句子转序列
     sentence = cut(sentence, by_character=by_char)
-    s2s_input = config.s2s_input_by_char if by_char else config.s2s_input_by_word
-    s2s_target = config.s2s_target_by_char if by_char else config.s2s_target_by_word
-    seq_len = config.seq_len_by_char if by_char else config.seq_len_by_word
+    s2s_input = config.s2s_input
+    s2s_target = config.s2s_target
+    seq_len = config.seq_len
     feature = s2s_input.transform(sentence, seq_len)
     # 构造feature和feature——length
     feature = torch.LongTensor(feature).to(config.device).unsqueeze(0)
@@ -114,9 +116,9 @@ def predict_beam_search():
     sentence = input("请输入句子: ")
     # 句子转序列
     sentence = cut(sentence, by_character=by_char)
-    s2s_input = config.s2s_input_by_char if by_char else config.s2s_input_by_word
-    s2s_target = config.s2s_target_by_char if by_char else config.s2s_target_by_word
-    seq_len = config.seq_len_by_char if by_char else config.seq_len_by_word
+    s2s_input = config.s2s_input
+    s2s_target = config.s2s_target
+    seq_len = config.seq_len
     feature = s2s_input.transform(sentence, seq_len)
     # 构造feature和feature——length
     feature = torch.LongTensor(feature).to(config.device).unsqueeze(0)
