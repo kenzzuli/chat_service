@@ -3,7 +3,7 @@ import torch
 """配置文件"""
 from chatbot.sentence2sequence import load_model
 
-by_char = True  # 决定整个模型是按词还是按字
+by_char = False  # 决定整个模型是按词还是按字
 
 # 原始语料
 user_dict_path = "./corpus/user_dict/keywords.txt"  # 用户自定义词典，jieba分词使用
@@ -105,3 +105,8 @@ EPOCHS = 1
 beam_width = 10
 # 梯度裁剪
 clip = 0.01
+
+# recall相关
+search_index_path = "./model/dnn/recall/search_index.pickle"
+recall_nums = 15
+recall_clusters = 10

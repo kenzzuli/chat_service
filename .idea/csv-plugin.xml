@@ -73,6 +73,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/dnn/recall/recall.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/lib/cut_sentence.py">
           <value>
             <Attribute>
