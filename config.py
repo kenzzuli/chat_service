@@ -3,11 +3,14 @@ import torch
 """配置文件"""
 from chatbot.sentence2sequence import load_model
 
-by_char = False  # 决定整个模型是按词还是按字
+by_char = True  # 决定整个模型是按词还是按字
 
 # 原始语料
 user_dict_path = "./corpus/user_dict/keywords.txt"  # 用户自定义词典，jieba分词使用
 q_a_pair_path = "./corpus/question_answer_pair/QA.xlsx"  # qa问答对
+q_path = "./corpus/dnn/recall/Q.txt"  # 召回要使用的q
+a_path = "./corpus/dnn/recall/A.txt"  # q
+qa_excel_path = "./corpus/dnn/recall/QA.xlsx"  # excel存储的qa
 stopwords_path = "./corpus/user_dict/stopwords.txt"  # 停用词表
 emoji_path = "./corpus/user_dict/emoji.txt"  # 颜表情
 xiaohuangji_path = "./corpus/classify/raw_corpus/小黄鸡未分词.conv"
@@ -37,6 +40,9 @@ chatbot_input_by_char_path = "./corpus/chatbot/input_by_char.txt"  # 聊天机�
 chatbot_target_by_char_path = "./corpus/chatbot/target_by_char.txt"  # 聊天机器人 答 语料 按字切分
 chatbot_input_path = chatbot_input_by_char_path if by_char else chatbot_input_by_word_path
 chatbot_target_path = chatbot_target_by_char_path if by_char else chatbot_target_by_word_path
+
+# qa 语料
+qa_path = "./corpus/dnn/recall/qa_dict.json"
 
 # sen2seq
 # 路径

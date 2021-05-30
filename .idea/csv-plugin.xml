@@ -94,6 +94,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/prepare_corpus/prepare_dnn_corpus/recall_corpus.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/process_corpus.py">
           <value>
             <Attribute>

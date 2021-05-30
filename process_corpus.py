@@ -5,11 +5,13 @@ from prepare_corpus.prepare_classify_corpus.builid_classify_corpus import proces
 
 from prepare_corpus.prepare_chatbot_corpus.chatbot_corpus import prepare_xiaohuangji, replace_emoji
 
-prepare_xiaohuangji(by_char=False)
-prepare_xiaohuangji(by_char=True)
+# prepare_xiaohuangji(by_char=False)
+# prepare_xiaohuangji(by_char=True)
 
 
 # sentence = "人工智能+python最喜欢你啦 mua╭(╯ε╰)╮"
 # print(replace_emoji(sentence))
 
+from prepare_corpus.prepare_dnn_corpus.recall_corpus import prepare_recall_corpus
 
+prepare_recall_corpus()
