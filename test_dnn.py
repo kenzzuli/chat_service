@@ -4,6 +4,6 @@
 from dnn.recall.recall import Recall
 
 if __name__ == '__main__':
-    recall = Recall()
+    recall = Recall(vectorize_method="fasttext")
     sentence = "蒋夏梦和周瓴？"
     print(recall.predict(sentence))

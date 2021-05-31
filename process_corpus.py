@@ -18,4 +18,5 @@ from prepare_corpus.prepare_chatbot_corpus.chatbot_corpus import prepare_xiaohua
 
 from prepare_corpus.prepare_dnn_corpus.sort_corpus import extract_and_cut_question
 
-extract_and_cut_question()
+extract_and_cut_question(by_char=True)
+extract_and_cut_question(by_char=False)

@@ -8,7 +8,7 @@ def extract_and_cut_question(by_char=True):
     num = 0
     fin = open(config.by_hand_path, "r").read()  # 读取json文件
     fin_dic = json.loads(fin)  # 用json直接读也行
-    with open(config.recall_corpus, "w") as fout:
+    with open(config.recall_corpus_by_char if by_char else config.recall_corpus_by_word, "w") as fout:
         for q_list_list in tqdm(fin_dic.values(), desc="Processing Homemade Corpus"):  # 列表中嵌套列表
             for q_list in q_list_list:
                 for q in q_list:

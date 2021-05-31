@@ -80,6 +80,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/dnn/recall/fasttext_vectorizer.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/dnn/recall/recall.py">
           <value>
             <Attribute>

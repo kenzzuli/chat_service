@@ -8,9 +8,9 @@ import config
 
 
 class Recall(object):
-    def __init__(self):
-        self.s2v = Sentence2Vector()
-        self.tfidf_vectorizer, self.features_vec, self.lines_cut, self.search_index = self.s2v.build_all()
+    def __init__(self, vectorize_method="fasttext"):
+        self.s2v = Sentence2Vector(vectorize_method=vectorize_method)
+        self.vectorizer, self.features_vec, self.lines_cut, self.search_index = self.s2v.build_all()
 
     def predict(self, sentence: str):
         """
@@ -20,7 +20,7 @@ class Recall(object):
         """
         sentence_cut = [" ".join(cut(sentence, by_character=by_char))]
         # ['python 真的 很 简单 吗 ？', '什么 是 产品经理 ？'] 以空格作为分隔
-        search_vector = self.tfidf_vectorizer.transform(sentence_cut)
+        search_vector = self.vectorizer.transform(sentence_cut)
         search_results = self.search_index.search(search_vector, k=config.recall_nums,
                                                   k_clusters=config.recall_clusters,
                                                   num_indexes=2,

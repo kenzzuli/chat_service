@@ -107,7 +107,14 @@ beam_width = 10
 clip = 0.01
 
 # recall相关
-search_index_path = "./model/dnn/recall/search_index.pickle"
+search_index_tfidf_path = "./model/dnn/recall/search_index_tfidf.pickle"
+search_index_bm25_path = "./model/dnn/recall/search_index_bm25.pickle"
+search_index_fasttext_path = "./model/dnn/recall/search_index_fasttext.pickle"
 recall_nums = 15
 recall_clusters = 10
-recall_corpus = "./corpus/dnn/sort/recall_corpus.txt"
+recall_corpus_by_char = "./corpus/dnn/sort/recall_corpus_by_char.txt"
+recall_corpus_by_word = "./corpus/dnn/sort/recall_corpus_by_word.txt"
+recall_corpus = recall_corpus_by_char if by_char else recall_corpus_by_word
+fasttext_vectorizer_by_char_path = "./model/dnn/recall/fasttext_vectorizer_by_char.model"
+fasttext_vectorizer_by_word_path = "./model/dnn/recall/fasttext_vectorizer_by_word.model"
+fasttext_vectorizer_path = fasttext_vectorizer_by_char_path if by_char else fasttext_vectorizer_by_word_path
