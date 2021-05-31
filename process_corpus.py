@@ -12,6 +12,10 @@ from prepare_corpus.prepare_chatbot_corpus.chatbot_corpus import prepare_xiaohua
 # sentence = "人工智能+python最喜欢你啦 mua╭(╯ε╰)╮"
 # print(replace_emoji(sentence))
 
-from prepare_corpus.prepare_dnn_corpus.recall_corpus import prepare_recall_corpus
+# from prepare_corpus.prepare_dnn_corpus.recall_corpus import prepare_recall_corpus
+#
+# prepare_recall_corpus()
 
-prepare_recall_corpus()
+from prepare_corpus.prepare_dnn_corpus.sort_corpus import extract_and_cut_question
+
+extract_and_cut_question()

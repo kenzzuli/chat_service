@@ -11,4 +11,3 @@ tfidf_vec = TfidfVectorizer()
 print(tfidf_vec.fit_transform(data).toarray())
 bm25_vec = BM25Vectorizer()
 print(bm25_vec.fit_transform(data))
-

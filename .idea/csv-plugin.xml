@@ -87,6 +87,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/dnn/recall/sentence_vector.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/lib/cut_sentence.py">
           <value>
             <Attribute>

@@ -110,3 +110,4 @@ clip = 0.01
 search_index_path = "./model/dnn/recall/search_index.pickle"
 recall_nums = 15
 recall_clusters = 10
+recall_corpus = "./corpus/dnn/sort/recall_corpus.txt"
