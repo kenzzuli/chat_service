@@ -119,3 +119,10 @@ recall_corpus = recall_corpus_by_char if by_char else recall_corpus_by_word
 fasttext_vectorizer_by_char_path = "./model/dnn/recall/fasttext_vectorizer_by_char.model"
 fasttext_vectorizer_by_word_path = "./model/dnn/recall/fasttext_vectorizer_by_word.model"
 fasttext_vectorizer_path = fasttext_vectorizer_by_char_path if by_char else fasttext_vectorizer_by_word_path
+
+# sort相关
+sort_ws_path = "./model/dnn/sort/sort_ws.pickle"  # word2sequence model
+sort_q_path = "./corpus/dnn/sort/q_cut_by_char.txt"
+sort_similar_q_path = "./corpus/dnn/sort/sim_q_cut_by_char.txt"
+sort_ws = load_model(sort_ws_path)  # 加载w2s model
+sort_batch_size = 128
