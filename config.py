@@ -3,7 +3,8 @@ import torch
 """配置文件"""
 from chatbot.sentence2sequence import load_model
 
-by_char = False  # 决定整个模型是按词还是按字
+by_char = True  # 决定整个模型是按词还是按字
+# 如果更改by_char，请删去model/dnn/recall/中的所有search_index，重新生成。
 
 # 原始语料
 user_dict_path = "./corpus/user_dict/keywords.txt"  # 用户自定义词典，jieba分词使用
