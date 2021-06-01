@@ -54,10 +54,10 @@ def get_dataloader():
 
 def collate_fn(batch):
     """
-        定义整理函数
-        :param batch: [(input, target, input_length, target_length), (input, target, input_length, target_length), ...]
-        :return:
-        """
+    定义整理函数
+    :param batch: [(input, target, input_length, target_length), (input, target, input_length, target_length), ...]
+    :return:
+    """
     # 对batch依据input_length从大到小排序，只有encoder中需要排序
     batch = sorted(batch, key=lambda x: x[2], reverse=True)
     # 先对batch拆包，变成多个元组对象，然后从每个元组中取第一个元素组成元组作为zip的第一个元素，相当于矩阵的转置

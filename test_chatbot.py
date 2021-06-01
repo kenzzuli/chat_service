@@ -64,4 +64,3 @@ if __name__ == '__main__':
     # eval()
     # predict()
     # predict_beam_search()
-

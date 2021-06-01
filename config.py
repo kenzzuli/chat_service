@@ -42,9 +42,6 @@ chatbot_target_by_char_path = "./corpus/chatbot/target_by_char.txt"  # 聊天机
 chatbot_input_path = chatbot_input_by_char_path if by_char else chatbot_input_by_word_path
 chatbot_target_path = chatbot_target_by_char_path if by_char else chatbot_target_by_word_path
 
-# qa 语料
-qa_path = "./corpus/dnn/recall/qa_dict.json"
-
 # sen2seq
 # 路径
 # 以词为单位的s2s模型路径
@@ -108,6 +105,8 @@ beam_width = 10
 clip = 0.01
 
 # recall相关
+# qa dict
+qa_path = "./corpus/dnn/recall/qa_dict.json"
 search_index_tfidf_path = "./model/dnn/recall/search_index_tfidf.pickle"
 search_index_bm25_path = "./model/dnn/recall/search_index_bm25.pickle"
 search_index_fasttext_path = "./model/dnn/recall/search_index_fasttext.pickle"
@@ -123,6 +122,23 @@ fasttext_vectorizer_path = fasttext_vectorizer_by_char_path if by_char else fast
 # sort相关
 sort_ws_path = "./model/dnn/sort/sort_ws.pickle"  # word2sequence model
 sort_q_path = "./corpus/dnn/sort/q_cut_by_char.txt"
+sort_similarity_path = "./corpus/dnn/sort/sim_label.txt"  # 衡量两个问题是否相似的标签
 sort_similar_q_path = "./corpus/dnn/sort/sim_q_cut_by_char.txt"
 sort_ws = load_model(sort_ws_path)  # 加载w2s model
+sort_ws_padding_index = sort_ws.dict[sort_ws.PAD_TAG]
 sort_batch_size = 128
+sort_embedding_dim = 300
+sort_hidden_size = 128
+sort_num_layers = 3
+sort_batch_first = True
+sort_dropout = 0.1
+sort_bidirectional = False
+sort_num_directions = 2 if sort_bidirectional else 1
+sort_pooling_stride = 2
+sort_pooling_kernel_size = 2
+sort_linear_size = 128
+
+dnn_model_path = "./model/dnn/sort/model.pkl"
+dnn_optimizer_path = "./model/dnn/sort/optimizer.pkl"
+sort_dnn_epoch = 10
+sort_threshold = 0.95
