@@ -15,7 +15,7 @@ import grpc
 from concurrent import futures
 
 
-class chatServicer(chatbot_pb2_grpc.ChatBotServiceServicer):
+class ChatServicer(chatbot_pb2_grpc.ChatBotServiceServicer):
 
     def __init__(self):
         # 提前加载各种模型
@@ -29,20 +29,18 @@ class chatServicer(chatbot_pb2_grpc.ChatBotServiceServicer):
         user_id = request.user_id
         message = request.user_message
         create_time = request.create_time
-        # 对用户的输出进行基础的处理，如分词
-        message_info = process_user_sentence(message)
-        attention, prob = classify.predict(message_info)
+        attention, prob = self.classify.predict(message)
         if attention == "QA":
             # 实现对对话数据的保存
             self.message_manager.user_message_pipeline(user_id, message, create_time, attention,
-                                                       entity=message_info["entity"])
-            recall_list, entity = self.recall.predict(message_info)
+                                                       entity=message["entity"])
+            recall_list, entity = self.recall.predict(message)
             user_response = self.sort.predict(message, recall_list)
 
         else:
             # 实现对对话数据的保存
             self.message_manager.user_message_pipeline(user_id, message, create_time, attention,
-                                                       entity=message_info["entity"])
+                                                       entity=message["entity"])
             user_response = self.chatbot.predict(message)
 
         self.message_manager.bot_message_pipeline(user_id, user_response)
@@ -55,7 +53,7 @@ def server():
     # 多线程服务器
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     # 注册本地服务
-    chatbot_pb2_grpc.add_ChatBotServiceServicer_to_server(chatServicer(), server)
+    chatbot_pb2_grpc.add_ChatBotServiceServicer_to_server(ChatServicer(), server)
     # 监听端口
     server.add_insecure_port("[::]:9999")
     # 开始接收请求进行服务
