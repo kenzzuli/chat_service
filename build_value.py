@@ -1,3 +1,6 @@
+"""
+在训练孪生神经网络时，只有q和sim_q，没有similarity，所以随机造了一点
+"""
 labels = [0, 1]
 import random
 

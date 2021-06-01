@@ -49,7 +49,7 @@ class ChatServicer(chatbot_pb2_grpc.ChatBotServiceServicer):
         return chatbot_pb2.ResponsedMessage(user_response=user_response, create_time=create_time)
 
 
-def server():
+def serve():
     # 多线程服务器
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     # 注册本地服务
@@ -66,13 +66,13 @@ def server():
 
 
 # todo 这里客户端没成功，以后再看吧
-def client():
-    with grpc.insecure_channel('localhost:9999') as channel:
-        stub = chatbot_pb2_grpc.ChatBotServiceStub(channel)
-        response = stub.GetMsg(chatbot_pb2.MsgRequest(name='world'))
-    print("Client received: " + response.msg)
+# def client():
+#     with grpc.insecure_channel('localhost:9999') as channel:
+#         stub = chatbot_pb2_grpc.ChatBotServiceStub(channel)
+#         response = stub.GetMsg(chatbot_pb2.MsgRequest(name='world'))
+#     print("Client received: " + response.msg)
 
 
 if __name__ == '__main__':
-    server()
+    serve()
     # client()
